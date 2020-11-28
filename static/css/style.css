@@ -1,0 +1,124 @@
+body{
+    -webkit-appearance: none;
+}
+
+li{
+    list-style: none;
+}
+
+.nolink{
+    text-decoration: none;
+    color: white;
+}
+
+.header{
+    background-color: #26d0c9;
+    color: #fff;
+    height: 90px;
+}
+
+.header-logo{
+    float: left;
+    font-size: 36px;
+    padding: 20px 40px;
+}
+
+.header-list li{
+    float: left;
+    padding: 33px 20px;
+}
+
+.main{
+    min-height: 680px;
+}
+
+.copy-container h1{
+    font-size: 100px;
+}
+
+.copy-container{
+    font-size: 30px;
+}
+
+.footer{
+    background-color: #2f5167;
+    color: #fff;
+    height: 120px;
+    padding: 40px;
+    top: 100vh;
+}
+
+.footer-logo{
+    float: left;
+    font-size: 32px;
+}
+
+.footer-list{
+    float: right;
+}
+
+.footer-list li{
+    padding-bottom: 20px;
+}
+
+.box{
+    width: 400px;
+    padding: 40px;
+    position: absolute;
+    /*top: 50%;*/
+    top: 340px;
+    left: 50%;
+    /*transform: translate(-50%,-50%);*/
+    transform: translate(-50%, -30%);
+    /*background: #191919;*/
+    background: white;
+    text-align: center;
+    box-shadow: 15px 15px  75px -10px #000000;
+    border-radius: 15px;
+}
+
+.box h1{
+    color: black;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.box input[type = "text"], .box input[type = "password"]{
+    border: 0;
+    background: #e4f7ff;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #1749ff;
+    padding: 14px 10px;
+    width: 200px;
+    outline: none;
+    color: rgb(0, 0, 0);
+    border-radius: 24px;
+    transition: 0.25s;
+}
+
+.box input[type = "text"]:focus, .box input[type = "password"]:focus{
+    width: 280px;
+    border-color: #13d47a;
+}
+
+.box input[type = "submit"]{
+    border: 0;
+    background: none;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid #fe005d;
+    padding: 14px 40px;
+    outline: none;
+    color: black;
+    border-radius: 24px;
+    transition: 0.25s;
+    cursor: pointer;
+}
+
+.box input[type = "submit"]:hover{
+    color: white;
+    background: #fe005d;
+}

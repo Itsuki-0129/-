@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta http-equiv="content-language" content="ja" charset="utf-8">
+        <title>テスト</title>
+        <link rel="stylesheet" type="text/css" href="../static/css/style.css">
+        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+        <script src="../static/js/for_html.js"></script>
+    </head>
+    <body>
+        <div class="header">
+            <div class="header-logo"><a class="nolink" href="/">教材検索</a></div>
+            <div class="header-list">
+                <ul>
+                    <li><a class="nolink" href="/login">ログイン</a></li>
+                    <li>項目２</li>
+                    <li>項目３</li>
+                    <li><a class="nolink" href="/hello">項目４</a></li>
+                </ul>
+            </div>
+        </div>
+
+        
+            {% block content %}
+            {% endblock %}
+        
+
+        <div class="footer">
+            <div class="footer-logo">教材検索</div>
+            <div class="footer-list">
+                <ul>
+                    <li>項目１</li>
+                    <li>項目２</li>
+                    <li>項目３</li>
+                </ul>
+            </div>
+        </div>
+    </body>
+</html>
