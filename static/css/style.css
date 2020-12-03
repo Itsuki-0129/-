@@ -71,7 +71,8 @@ li{
     /*transform: translate(-50%,-50%);*/
     transform: translate(-50%, -30%);
     /*background: #191919;*/
-    background: white;
+    background: #fff;
+    ;
     text-align: center;
     box-shadow: 15px 15px  75px -10px #000000;
     border-radius: 15px;

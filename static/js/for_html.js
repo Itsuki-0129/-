@@ -18,6 +18,9 @@ function text001(){
   //document.getElementById("create_js").append(document.createTextNode("hello"));
   //ここまで
 }
+function register_001(){
+    console.log("ここにはmemberテーブルへの登録を行う")
+}
 function ajax_db(){
       var db_json = JSON.stringify({"select_db":$('#select_db_id').val()});
       $.ajax({

@@ -1,7 +1,12 @@
-from flask import Flask, render_template, request, json, jsonify
+from flask import Flask
+from flask import Flask, flash, redirect, render_template, request, session, abort, json, jsonify
 import pymysql
 import requests
+import os
+import sys
+
 app = Flask(__name__)
+app.secret_key = "hogehoge"
 
 table_list = []
 column_list = []
@@ -23,18 +28,18 @@ def db_access(db_name, sql_query):
         conn.close()
     return result
 
-user_id = "Itsuki-0129"
-
-login_flag = 0
-
-if login_flag == 1:
-    login_info = user_id
-else:
-    login_info = "ログイン"
+def login_check():
+    login_info = None
+    if not session.get('logged_in'):
+        login_info = "ログイン"
+    else:
+        login_info = "ItsukiNagao"
+    return login_info
 
 #ホームページ
 @app.route('/', methods = ["GET", "POST"])
 def index():
+    login_info = login_check()
     return render_template("index.html", login_info=login_info)
 
 @app.route('/ajax_db', methods=["GET", "POST"])
@@ -80,16 +85,33 @@ def ajax_003():
 #会員登録ページ
 @app.route('/register', methods = ["GET", "POST"])
 def register_form():
+    login_info = login_check()
     return render_template("register.html", login_info=login_info)
+
+#登録内容確認ページ
+@app.route('/register_check', methods = ["GET", "POST"])
+def register_check():
+    return render_template("register_check.html")
 
 #ログインページ
 @app.route('/login', methods = ["GET", "POST"])
 def login_form():
+    login_info = login_check()
     return render_template("login.html", login_info=login_info)
+
+@app.route('/re_login', methods = ["GET", "POST"])
+def home():
+    if request.form['username'] == 'ItsukiNagao' \
+        and request.form['password'] == 'Nagao-1294':
+        session['logged_in'] = True
+    else:
+        session['logged_in'] = False
+    return login_form()
 
 #検索ページ
 @app.route('/search', methods = ["GET", "POST"])
 def search_form():
+    login_info = login_check()
     db_result = db_access("", "show databases;")
     db_list = []
     for i in db_result:
@@ -99,7 +121,9 @@ def search_form():
 #共有ページ
 @app.route('/upload', methods = ["GET", "POST"])
 def pptx_upload():
+    login_info = login_check()
     return render_template("upload.html", login_info=login_info)
 
 if __name__ == '__main__':
+    app.secret_key = os.urandom(12)
     app.run(host='0.0.0.0', port=5000, debug=True)
