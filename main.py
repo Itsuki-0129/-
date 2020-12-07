@@ -33,7 +33,7 @@ def login_check():
     if not session.get('logged_in'):
         login_info = "ログイン"
     else:
-        login_info = "ItsukiNagao"
+        login_info = session['user_name']
     return login_info
 
 #ホームページ
@@ -42,6 +42,7 @@ def index():
     login_info = login_check()
     return render_template("index.html", login_info=login_info)
 
+#Ajaxでデータベース選択時のテーブル一覧送信
 @app.route('/ajax_db', methods=["GET", "POST"])
 def ajax_001():
     selected_db = request.json['select_db']
@@ -56,6 +57,7 @@ def ajax_001():
 
     return jsonify(json_for_js)
 
+#Ajaxでテーブル選択時のカラム一覧送信
 @app.route('/ajax_table', methods=["GET", "POST"])
 def ajax_002():
     selected_db = request.json['select_db']
@@ -70,6 +72,7 @@ def ajax_002():
     print("/ajax_tableのjsonifyの値は、"+str(json_for_checkbox))
     return jsonify(json_for_checkbox)
 
+#Ajaxでカラム選択時のデータベース結果送信
 @app.route('/ajax_column', methods=["GET", "POST"])
 def ajax_003():
     selected_db = request.json['select_db']
@@ -86,7 +89,7 @@ def ajax_003():
 @app.route('/register', methods = ["GET", "POST"])
 def register_form():
     login_info = login_check()
-    return render_template("register.html", login_info=login_info)
+    return render_template("register.html", login_info=login_info, MailAddress="アドレス", UserName="ユーザー", PassWord="パスワード")
 
 #登録内容確認ページ
 @app.route('/register_check', methods = ["GET", "POST"])
@@ -101,9 +104,16 @@ def login_form():
 
 @app.route('/re_login', methods = ["GET", "POST"])
 def home():
-    if request.form['username'] == 'ItsukiNagao' \
-        and request.form['password'] == 'Nagao-1294':
+    user_str = request.form['username']
+    passwd_str = request.form['password']
+    sql_query = "select count(*) from member where user = '%s' and password = '%s';"%(user_str, passwd_str)
+    print(sql_query)
+    db_result = db_access(str('final_research'), sql_query)
+    print(db_result[0]['count(*)'])
+    
+    if db_result[0]["count(*)"] == 1:
         session['logged_in'] = True
+        session['user_name'] = user_str+"はログイン中"
     else:
         session['logged_in'] = False
     return login_form()
@@ -126,4 +136,4 @@ def pptx_upload():
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5500, debug=True)

@@ -1,12 +1,12 @@
 {% extends "menu.html" %}
 {% block content %}
 <div class="main">
-    <form class="box" action="#" method="GET" id="register_001">
+    <form class="box" action="/register" method="GET" id="register_001">
         <h1>Register</h1>
-        <input type="text" name="mail_str" placeholder="MailAddress">
-        <input type="text" name="user_str" placeholder="UserName">
-        <input type="password" name="password_str" placeholder="Password">
-        <input type="submit" name="submitbutton" value="Register" onclick="register_001();">
+        <input type="text" name="mail_str" value="{{MailAddress}}" placeholder="MailAddress">
+        <input type="text" name="user_str" value="{{UserName}}" placeholder="UserName">
+        <input type="password" name="password_str" value="{{PassWord}}" placeholder="Password">
+        <input type="submit" name="submitbutton" value="Register">
     </form>
 </div>
 {% endblock %}
