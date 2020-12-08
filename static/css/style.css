@@ -1,5 +1,5 @@
 *{
-    /*-webkit-appearance: none;*/
+    -webkit-appearance: none;
     font-family: "Avenir Next";
 }
 
@@ -8,6 +8,18 @@ body{
 }
 
 .soft_ui{
+    background-color: #eee;
+    outline: none;
+    color: black;
+    margin: 10px;
+    padding: 5px;
+    height: 40px;
+    border-radius: 20px;
+    border: none;
+    box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #fff;
+}
+
+.upload_button{
     background-color: #eee;
     outline: none;
     color: black;
@@ -258,4 +270,13 @@ table.zebra tr:nth-child(even){
     width: 64px;
     height: 64px;
     padding: 10px;
+}
+
+.form_001 input[type = "text"]{
+    text-align: center;
+    color: white;
+    width: 250px;
+    background: none;
+    outline: none;
+    border: none;
 }
