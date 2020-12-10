@@ -200,4 +200,8 @@ function table_gen(){
     })
   }
 }
-
+function submit_register(){
+  var upload_form = document.getElementById('register_001');
+  upload_form.action = "/register_check";
+  upload_form.submit();
+}

@@ -28,6 +28,23 @@ def db_access(db_name, sql_query):
         conn.close()
     return result
 
+def db_insert(db_name, sql_query):
+    conn = pymysql.connect(host='localhost',
+                           user='ItsukiNagao',
+                           passwd='nagaoitsuki',
+                           db='%s' % (db_name),
+                           charset='utf8',
+                           cursorclass=pymysql.cursors.DictCursor
+                           )
+    try:
+        with conn.cursor() as cursor:
+            sql = "%s" % (sql_query)
+            cursor.execute(sql)
+        conn.commit()
+    finally:
+        conn.close()
+    return "Done!"
+
 def login_check():
     login_info = None
     if not session.get('logged_in'):
@@ -89,12 +106,29 @@ def ajax_003():
 @app.route('/register', methods = ["GET", "POST"])
 def register_form():
     login_info = login_check()
-    return render_template("register.html", login_info=login_info, MailAddress="アドレス", UserName="ユーザー", PassWord="パスワード")
+    return render_template("register.html", login_info=login_info)
 
 #登録内容確認ページ
 @app.route('/register_check', methods = ["GET", "POST"])
 def register_check():
-    return render_template("register_check.html")
+    login_info = login_check()
+    mail_str = request.form['mail_str']
+    user_str = request.form['user_str']
+    passwd_str = request.form['password_str']
+    sql_query = "select count(*) from member where user ='%s' or mail = '%s';"%(user_str, mail_str)
+    print("クエリは"+sql_query)
+    db_result = db_access(str('final_research'), sql_query)
+    print("これが問い合わせ結果→"+str(db_result[0]['count(*)']))
+    if db_result[0]['count(*)'] != 0:
+        Already = "そのユーザーは既に存在しています"
+    else:
+        Already = "被ってない"
+        #dbにinsert
+        print("dbにinsert")
+        sql_query = "insert into member (mail, user, password) values('%s', '%s', '%s');"%(mail_str, user_str, passwd_str)
+        db_insert("final_research", sql_query)
+
+    return render_template("register_check.html", login_info=login_info, Already=Already, MailAddress=mail_str, UserName=user_str, PassWord=passwd_str)
 
 #ログインページ
 @app.route('/login', methods = ["GET", "POST"])
