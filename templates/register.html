@@ -2,12 +2,12 @@
 {% block content %}
 <div class="main">
     <form class="box" action="/register_check" method="POST" id="register_001">
-        <h1>Register</h1>
+        <h1>登録</h1>
         <h3>{{Already}}</h3><!--そのユーザーは既に存在しています-->
-        <input type="text" name="mail_str" value="{{MailAddress}}" placeholder="MailAddress">
-        <input type="text" name="user_str" value="{{UserName}}" placeholder="UserName">
-        <input type="password" name="password_str" value="{{PassWord}}" placeholder="Password">
-        <input type="submit" name="submitbutton" value="Register">
+        <input type="text" name="mail_str" value="{{MailAddress}}" placeholder="メールアドレス">
+        <input type="text" name="user_str" value="{{UserName}}" placeholder="ユーザー名">
+        <input type="password" name="password_str" value="{{PassWord}}" placeholder="パスワード">
+        <input type="submit" name="submitbutton" value="登録">
     </form>
 </div>
 {% endblock %}

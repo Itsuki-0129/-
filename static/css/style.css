@@ -184,7 +184,7 @@ li{
     padding: 14px 40px;
     outline: none;
     color: black;
-    border-radius: 24px;
+    border-radius: 26px;
     transition: 0.25s;
     cursor: pointer;
 }
@@ -283,4 +283,30 @@ table.zebra tr:nth-child(even){
     background: none;
     outline: none;
     border: none;
+}
+
+.submit_center{
+    margin: auto;
+    text-align: center;
+}
+
+.form_001 input[type = "submit"]{
+    background-color: #596479;
+    outline: none;
+    color: white;
+    margin: 15px auto;
+    padding: 10px 120px;
+    height: 50px;
+    border-radius: 25px;
+    border: none;
+    box-shadow: 5px 5px 10px #252a33, -5px -5px 10px #93a5c7;
+}
+
+.form_001 input[type = "submit"]:hover{
+    background-color: #67748b;
+    transition: all 0.3s ease;
+}
+
+.form_001 input[type = "submit"]:active{
+    box-shadow: inset 5px 5px 10px #4b5566;
 }

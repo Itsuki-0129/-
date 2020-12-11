@@ -122,13 +122,13 @@ def register_check():
     if db_result[0]['count(*)'] != 0:
         Already = "そのユーザーは既に存在しています"
     else:
-        Already = "被ってない"
+        Already = "登録しました！"
         #dbにinsert
         print("dbにinsert")
         sql_query = "insert into member (mail, user, password) values('%s', '%s', '%s');"%(mail_str, user_str, passwd_str)
         db_insert("final_research", sql_query)
 
-    return render_template("register_check.html", login_info=login_info, Already=Already, MailAddress=mail_str, UserName=user_str, PassWord=passwd_str)
+    return render_template("register.html", login_info=login_info, Already=Already, MailAddress=mail_str, UserName=user_str, PassWord=passwd_str)
 
 #ログインページ
 @app.route('/login', methods = ["GET", "POST"])
@@ -166,7 +166,15 @@ def search_form():
 @app.route('/upload', methods = ["GET", "POST"])
 def pptx_upload():
     login_info = login_check()
-    return render_template("upload.html", login_info=login_info)
+    try:
+        if session['logged_in'] == True:
+            return render_template("upload.html", login_info=login_info)
+        else:
+            return render_template("login.html", Already="共有するにはログインしてください", login_info=login_info)
+    except:
+        #一度もログイン作業を行なっていないとエラーになるからそのときもログインを促す
+        return render_template("login.html", Already="共有するにはログインしてください", login_info=login_info)
+    #return render_template("upload.html", login_info=login_info)
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
