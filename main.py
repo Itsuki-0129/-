@@ -1,5 +1,6 @@
 from flask import Flask
-from flask import Flask, flash, redirect, render_template, request, session, abort, json, jsonify
+from flask import Flask, flash, redirect, render_template, request, session, abort, json, jsonify, url_for, send_from_directory
+from werkzeug.utils import secure_filename
 import pymysql
 import requests
 import os
@@ -162,12 +163,30 @@ def search_form():
         db_list.append(i["Database"])
     return render_template("search.html", db_list=db_list, login_info=login_info)
 
+UPLOAD_FOLDER = './static/uploads'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
 #共有ページ
 @app.route('/upload', methods = ["GET", "POST"])
 def pptx_upload():
     login_info = login_check()
     try:
         if session['logged_in'] == True:
+            #↓アップロード試作
+            if request.method == 'POST':
+                if 'file' not in request.files:
+                    print('ファイルがありません')
+                    return redirect(request.url)
+                file = request.files['file']
+                if file.filename == '':
+                    print('ファイルがありません')
+                    return redirect(request.url)
+                if file and allwed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                return redirect(url_for('uploaded_file', filename=filename))
+            #↑ここまで
             return render_template("upload.html", login_info=login_info)
         else:
             return render_template("login.html", Already="共有するにはログインしてください", login_info=login_info)
@@ -175,6 +194,13 @@ def pptx_upload():
         #一度もログイン作業を行なっていないとエラーになるからそのときもログインを促す
         return render_template("login.html", Already="共有するにはログインしてください", login_info=login_info)
     #return render_template("upload.html", login_info=login_info)
+
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+def allwed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
