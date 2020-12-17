@@ -1,0 +1,32 @@
+{% extends "menu.html" %}
+{% block content %}
+<div class="main">
+    <form class="form_001" method="POST" id="form_001">
+        <select class="soft_ui" name="select_db" id="select_db_id" onchange="ajax_db()">
+          <option value="" hidden>データベースを選択</option>
+          {% for i in db_list %}
+          <option value="{{i}}">{{i}}</option>
+          {% endfor %}
+        </select>
+
+        <select class="soft_ui" name="select_table" id="select_table_id" onchange="ajax_table()">
+          <option value=""hidden>テーブルを選択</option>
+        </select>
+        <div id="all_check_column" onchange="table_gen()"></div>
+        <div id="check_column_id" onchange="table_gen()">
+        </div>
+        <input type="text" class="text_001" id="text_001_id" name="text_001" placeholder="text_001" oninput="table_gen()" autocomplete="off">
+        <input type="button" class="submit_button" name="submit_button" value="無意味ボタン" onclick="table_gen()">
+      </form>
+      <br><br>
+      <!--<h2>テーブル</h2>
+      <div id="for_table"></div>
+      <h2>テキストボックス入力数</h2>
+      <div id="create_js"></div>
+      <h2>チェック数</h2>
+      <div id="checked_count"></div>-->
+      <div id="create_table"></div>
+    </div>
+</div>
+
+{% endblock %}

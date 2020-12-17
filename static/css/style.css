@@ -199,40 +199,88 @@ li{
     float: right;
     padding: 33px;
 }
-/*↓データベース検索のやつ↓*/
-table.zebra{
-    min-width: 50%;
+/*↓データベース検索のtableデザイン↓*/
+.zebra{
+    min-width: 50%;/*最小横の長さ指定*/
+    border: 1px solid gray;/*外枠の線の設定*/
+    border-collapse: separate;/*隣接するセルのボーダーを重ねるか、間隔をあけるか*/
+    border-radius: 5px;/*外枠の角丸半径*/
+    border-spacing: 0;
+}
+.zebra th, td{
+    border-bottom: 1px solid gray;
+    padding: 10px 20px;
+}
+.zebra th{
+    border-right: 1px solid gray;
+    background: skyblue;
+}
+.zebra td{
+    border-right: 1px solid gray;
+}
+.zebra th:first-child{
+    /*左上の角丸*/
+    border-radius: 4px 0 0 0;
+}
+.zebra th:last-child{
+    border-right: none;
+    border-radius: 0 4px 0 0;
+}
+.zebra tr:last-child td:last-child{
+    border-radius: 0 0 4px 0;
+}
+.zebra tr:last-child td:first-child{
+    border-radius: 0 0 0 4px;
+}
+.zebra tr:last-child td{
+    border-bottom: none;
+}
+.zebra td:last-child{
+    border-right: none;
+}
+.zebra tr:nth-child(odd){
+    background-color: lightblue;
+}
+.zebra tr:nth-child(even){
+    background-color: white;
+}
+/*↑データベース検索のtableデザイン↑*/
+
+/*↓教材検索のtableデザイン↓*/
+.file_info{
+    min-width: 700px;
+    margin: 10px 10px;
+    border: 1px solid #acacac;
     border-collapse: separate;
-    border-spacing: 1px;
-    border-radius: 0.5em;
-    overflow: hidden;
-    box-shadow: 15px 15px  75px -10px #000000;
+    border-radius: 5px;
+    border-spacing: 0;
 }
-
-table.zebra th, table.zebra td{
-    padding: 10px 0;
-    text-align: center;
+.file_info th, td{
+    border-bottom: 1px solid #acacac;
+    padding: 10px 20px;
 }
-
-table.zebra th{
-    background-color: #049dc4;
+.file_info th{
+    border-right: 1px solid #acacac;
+    background: #e0e0e0;
 }
-
-table.zebra tr{
-    color: black;
+.file_info td{
+    background-color: whitesmoke;
 }
-
-table.zebra tr:hover td{
-    background-color: #fe005d;
+.file_info tr:first-child th{
+    border-radius: 5px 0 0 0;
 }
-
-table.zebra tr:nth-child(odd){
-    background-color: #e2f2ff;
+.file_info tr:first-child td{
+    border-radius: 0 5px 0 0;
 }
-
-table.zebra tr:nth-child(even){
-    background-color: #fefeff;
+.file_info tr:last-child th{
+    border-bottom: none;
+    border-radius: 0 0 0 5px;
 }
+.file_info tr:last-child td{
+    border-bottom: none;
+    border-radius: 0 0 5px 0;
+}
+/*↑教材検索のtableデザイン↑*/
 
 .add_space{
     background-color: #596479;
@@ -276,7 +324,7 @@ table.zebra tr:nth-child(even){
     padding: 10px;
 }
 
-.form_001 input[type = "text"]{
+.add_square input[type = "text"]{
     text-align: center;
     color: white;
     width: 250px;

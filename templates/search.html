@@ -1,32 +1,116 @@
 {% extends "menu.html" %}
 {% block content %}
 <div class="main">
-    <form class="form_001" method="POST" id="form_001">
-        <select class="soft_ui" name="select_db" id="select_db_id" onchange="ajax_db()">
-          <option value="" hidden>データベースを選択</option>
-          {% for i in db_list %}
-          <option value="{{i}}">{{i}}</option>
-          {% endfor %}
-        </select>
+  <div class="search_engine">
+    <form action="/search" method="POST">
+      <select name="select_school_type">
+        <option value=""hidden>校種を選択</option>
+        <option value="1">小学校</option>
+        <option value="2">中学校</option>
+        <option value="3">高等学校</option>
+        <option value="4">特別支援</option>
+    </select>
+    <select name="select_subjects">
+        <option value=""hidden>教科領域等を選択</option>
+        <option value="1">国語科</option>
+        <option value="2">算数科</option>
+        <option value="3">理科</option>
+        <option value="4">社会科</option>
+        <option value="5">音楽科</option>
+        <option value="6">体育科</option>
+        <option value="7">保健体育科</option>
+        <option value="8">道徳の時間</option>
+        <option value="9">道徳教育</option>
+        <option value="10">特別活動</option>
+        <option value="11">総合的な学習の時間</option>
+        <option value="12">生活科</option>
+        <option value="13">美術科</option>
+        <option value="14">数学科</option>
+        <option value="15">英語科</option>
+        <option value="16">外国語活動</option>
+        <option value="17">技術分野</option>
+        <option value="18">家庭分野</option>
+        <option value="19">図画工作科</option>
+        <option value="20">地理歴史科</option>
+        <option value="21">公民科</option>
+        <option value="22">農業科</option>
+        <option value="23">商業科</option>
+        <option value="24">工業科</option>
+        <option value="25">家庭科</option>
+        <option value="26">自立活動</option>
+        <option value="27">芸術科</option>
+        <option value="28">外国語科</option>
+        <option value="29">スポーツ総合科</option>
+    </select>
+    <select name="select_grade">
+        <option value=""hidden>学年を選択</option>
+        <option value="1">1学年</option>
+        <option value="2">2学年</option>
+        <option value="3">3学年</option>
+        <option value="4">4学年</option>
+        <option value="5">5学年</option>
+        <option value="6">6学年</option>
+        <option value="7">小学部</option>
+        <option value="8">中学部</option>
+        <option value="9">高等部</option>
+    </select>
 
-        <select class="soft_ui" name="select_table" id="select_table_id" onchange="ajax_table()">
-          <option value=""hidden>テーブルを選択</option>
-        </select>
-        <div id="all_check_column" onchange="table_gen()"></div>
-        <div id="check_column_id" onchange="table_gen()">
-        </div>
-        <input type="text" class="text_001" id="text_001_id" name="text_001" placeholder="text_001" oninput="table_gen()" autocomplete="off">
-        <input type="button" class="submit_button" name="submit_button" value="無意味ボタン" onclick="table_gen()">
-      </form>
-      <br><br>
-      <!--<h2>テーブル</h2>
-      <div id="for_table"></div>
-      <h2>テキストボックス入力数</h2>
-      <div id="create_js"></div>
-      <h2>チェック数</h2>
-      <div id="checked_count"></div>-->
-      <div id="create_table"></div>
+    <input type="text" name="subject_title" placeholder="単元題材名" autocomplete="off">
+    <input type="text" name="done_year" placeholder="実施年度" autocomplete="off">
+    <input type="submit" name="search_engin_submit" value="検索">
+    </form>
+    <div class="kumamoto">
+      {% for i in result_uploads_list %}
+      <table class="file_info">
+        <tbody>
+          <tr>
+            <th style="width:10rem;">校種</th>
+            <!--テーブルschool_type_listの中から読み取る、配列の順番は最初が[0]だからi['school_type']から１引かないと-->
+            <td>{{school_type_list[i['school_type']-1]['value']}}</td>
+          </tr>
+
+          <tr>
+            <th style="width:10rem;">教科領域等</th>
+            <!--テーブルsubjectsの中から読み取る、配列の順番は最初が[0]だからi['subjects']から１引かないと-->
+            <td>{{subjects_list[i['subjects']-1]['value']}}</td>
+          </tr>
+
+          <tr>
+            <th style="width:10rem;">学年</th>
+            <!--テーブルgrade_listの中から読み取る、配列の順番は最初が[0]だからi['grade']から１引かないと-->
+            <td>{{grade_list[i['grade']-1]['value']}}</td>
+          </tr>
+
+          <tr>
+            <th style="width:10rem;">単元題材名</th>
+            <td>{{i['title']}}</td>
+          </tr>
+
+          <tr>
+            <th style="width:10rem;">ファイル名</th>
+            <td>
+              <span class="file_link"></span>&nbsp;<a href="/" target="_blank">{{i['file_name']}}</a>
+            </td>
+          </tr>
+
+          <tr>
+            <th style="width:10rem;">作成者</th>
+            <td>
+              <!--jsonのid_name_json{番号:ユーザー名}からユーザー名を引き出す-->
+              <span class="file_link"></span>&nbsp;<a href="/" target="_blank">{{id_name_json[0][i['user_id']]}}</a>
+            </td>
+          </tr>
+
+          <tr>
+            <th style="width:10rem;">実施年度</th>
+            <td>{{i['year']}}</td>
+          </tr>
+
+        </tbody>
+      </table>
+      {% endfor %}
     </div>
+  </div>
 </div>
 
 {% endblock %}
