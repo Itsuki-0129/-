@@ -104,7 +104,11 @@ def ajax_003():
     selected_table = request.json['select_table']
     selected_columns = request.json['check_001']
     test_search_word = request.json['text_001']
-    sql_query = "select "+", ".join(str(e) for e in selected_columns)+" from "+str(selected_table)+" where "+" or ".join(str(e)+" like '%"+test_search_word+"%'" for e in selected_columns)+";"
+    sql_query = "select "+", "\
+        .join(str(e) for e in selected_columns)\
+            +" from "+str(selected_table)+" where "\
+                +" or ".join(str(e)+" like '%"+test_search_word\
+                    +"%'" for e in selected_columns)+";"
     print("●クエリはこちら→"+"("+sql_query+")")
     db_result = db_access(selected_db, sql_query)
     print("db_resultをまるごと表示→"+str(db_result))
@@ -198,12 +202,16 @@ def search_form():
     select_grade = ""
     subject_title = ""
     done_year = ""
+    select_json = {}
     if request.method == "POST":
         select_school_type = request.form['select_school_type']
         select_subjects = request.form['select_subjects']
         select_grade = request.form['select_grade']
         subject_title = request.form['subject_title']
         done_year = request.form['done_year']
+        select_json = {'select_school_type':select_school_type, 'select_subjects':select_subjects, \
+            'select_grade':select_grade, 'subject_title':subject_title, 'done_year':done_year}
+        print('select_json==>'+str(select_json))
     print("これが検索条件"+select_school_type+", "+select_subjects+", "+select_grade+", "+subject_title+", "+done_year)
 #-----------------------uploads_listの教材情報を表示するための準備-----------------------
     empty_box = select_school_type+select_subjects+select_grade+subject_title+done_year
@@ -236,9 +244,32 @@ def search_form():
         id_name_json[0].update([(i, (db_access("final_research", user_query)[0]['user']))])
     print("これがkey=id:value=username→"+str(id_name_json))
 #--------------------------------------ここまで---------------------------------------
+#-----------------------------------ページネーション-----------------------------------
+    #page_numの中身はjsonで{ページ番号:リンク}でおk？
+    page_limit = len(result_uploads_list)
+    now_page = 1#リンクからの値で変更できるように GET
+    #ページの最初は、=(now_page-1)*page_limit=(現在のページ-1)*表示件数
+    page_start = (now_page-1)*2
+
+    #件数が0だと0/0でエラーが起こるので例外追加(2020-12-21)
+    try:
+        if len(result_uploads_list)%page_limit != 0:
+            page_max = len(result_uploads_list)//page_limit+1
+        else:
+            page_max = len(result_uploads_list)//page_limit
+    except:
+        page_max = 0
+        
+
+    #ここからはページリンク生成のテスト
+    page_num = {}
+    for num, i in enumerate(result_uploads_list):
+        page_num[num]=i['title']
+
     return render_template("search.html"\
-        , login_info=login_info, result_uploads_list=result_uploads_list\
-            , school_type_list=school_type_list, subjects_list=subjects_list, grade_list=grade_list, id_name_json=id_name_json)
+        , login_info=login_info, result_uploads_list=result_uploads_list, select_json=select_json\
+            , school_type_list=school_type_list, subjects_list=subjects_list, grade_list=grade_list, id_name_json=id_name_json\
+                , page_num=page_num, page_start=page_start, page_limit=page_limit, page_max=page_max)
 
 #ファイルのアップロード先のディレクトリ
 UPLOAD_FOLDER = './static/uploads'
@@ -268,10 +299,6 @@ def pptx_upload():
                     return redirect(request.url)
                 #ファイルのチェック
                 if file and allwed_file(file.filename):
-                    #危険な文字を削除(サニタイズ処理？)→ここで絶対パスとか消してるの？？？どうなの？？？
-                    filename = secure_filename(file.filename)
-                    #ファイルの保存
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                     #-------------------------↓データベースのuploads_listに登録する-------------------------
                     select_school_type = request.form['select_school_type']
                     select_subjects = request.form['select_subjects']
@@ -297,6 +324,15 @@ def pptx_upload():
                     #↓先に用意したクエリをもとにinsert
                     db_insert("final_research", sql_query)
                     #--------------------------------------↑ここまで--------------------------------------
+                    #危険な文字を削除(サニタイズ処理？)→ここで絶対パスとか消してるの？？？どうなの？？？
+                    #filename = secure_filename(file.filename)
+                    filename = file.filename
+                    #ファイル名の付け方で困ってます！！！！！！2020-12-18
+                    mkdir_sql = "select id from uploads_list where " 
+                    db_access("final_research", mkdir_sql)
+                    os.mkdir('./static/uploads/test')
+                    #ファイルの保存
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/test", filename))
                 #アップロード後のページに転送
                 return redirect(url_for('uploaded_file', filename=filename))
             #アップロード画面のリターン？

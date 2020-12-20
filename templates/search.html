@@ -3,64 +3,51 @@
 <div class="main">
   <div class="search_engine">
     <form action="/search" method="POST">
-      <select name="select_school_type">
-        <option value=""hidden>校種を選択</option>
-        <option value="1">小学校</option>
-        <option value="2">中学校</option>
-        <option value="3">高等学校</option>
-        <option value="4">特別支援</option>
-    </select>
-    <select name="select_subjects">
-        <option value=""hidden>教科領域等を選択</option>
-        <option value="1">国語科</option>
-        <option value="2">算数科</option>
-        <option value="3">理科</option>
-        <option value="4">社会科</option>
-        <option value="5">音楽科</option>
-        <option value="6">体育科</option>
-        <option value="7">保健体育科</option>
-        <option value="8">道徳の時間</option>
-        <option value="9">道徳教育</option>
-        <option value="10">特別活動</option>
-        <option value="11">総合的な学習の時間</option>
-        <option value="12">生活科</option>
-        <option value="13">美術科</option>
-        <option value="14">数学科</option>
-        <option value="15">英語科</option>
-        <option value="16">外国語活動</option>
-        <option value="17">技術分野</option>
-        <option value="18">家庭分野</option>
-        <option value="19">図画工作科</option>
-        <option value="20">地理歴史科</option>
-        <option value="21">公民科</option>
-        <option value="22">農業科</option>
-        <option value="23">商業科</option>
-        <option value="24">工業科</option>
-        <option value="25">家庭科</option>
-        <option value="26">自立活動</option>
-        <option value="27">芸術科</option>
-        <option value="28">外国語科</option>
-        <option value="29">スポーツ総合科</option>
-    </select>
-    <select name="select_grade">
-        <option value=""hidden>学年を選択</option>
-        <option value="1">1学年</option>
-        <option value="2">2学年</option>
-        <option value="3">3学年</option>
-        <option value="4">4学年</option>
-        <option value="5">5学年</option>
-        <option value="6">6学年</option>
-        <option value="7">小学部</option>
-        <option value="8">中学部</option>
-        <option value="9">高等部</option>
-    </select>
 
-    <input type="text" name="subject_title" placeholder="単元題材名" autocomplete="off">
-    <input type="text" name="done_year" placeholder="実施年度" autocomplete="off">
-    <input type="submit" name="search_engin_submit" value="検索">
+      <label for="select_school_type" class="select_label">
+        <select name="select_school_type"  id="select_school_type" class="select_button">
+          <option value=""hidden>校種を選択</option>
+          {% for i in  school_type_list %}
+            {% if i['id']|string == select_json['select_school_type'] %}
+              <option value="{{i['id']}}" selected>{{i['value']}}</option>
+            {% else %}
+              <option value="{{i['id']}}">{{i['value']}}</option>
+            {% endif %}
+          {% endfor %}
+        </select>
+        <span class="caret" for="select_school_type"></span>
+      </label>
+      
+      <select name="select_subjects" class="select_button">
+        <option value=""hidden>教科領域等を選択</option>
+        {% for i in subjects_list %}
+          {% if i['id']|string == select_json['select_subjects'] %}
+            <option value="{{i['id']}}" selected>{{i['value']}}</option>
+          {% else %}
+            <option value="{{i['id']}}">{{i['value']}}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+
+      <select name="select_grade" class="select_button">
+        <option value=""hiddenn>学年を選択</option>
+        {% for i in grade_list %}
+          {% if i['id']|string == select_json['select_grade'] %}
+            <option value="{{i['id']}}" selected>{{i['value']}}</option>
+          {% else %}
+            <option value="{{i['id']}}">{{i['value']}}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
+
+      <input type="text" name="subject_title" class="select_text" value="{{select_json['subject_title']}}" placeholder="単元題材名" autocomplete="off">
+      <input type="text" name="done_year" class="select_text" value="{{select_json['done_year']}}" placeholder="実施年度" autocomplete="off">
+      <input type="submit" class="submit_button" name="search_engin_submit" value="検索">
     </form>
     <div class="kumamoto">
-      {% for i in result_uploads_list %}
+      <h4>最大ページ数は{{page_max}}</h4>
+      {% for i in result_uploads_list[page_start:page_start+page_limit] %}
+      {{loop.index}}
       <table class="file_info">
         <tbody>
           <tr>
@@ -70,15 +57,15 @@
           </tr>
 
           <tr>
-            <th style="width:10rem;">教科領域等</th>
-            <!--テーブルsubjectsの中から読み取る、配列の順番は最初が[0]だからi['subjects']から１引かないと-->
-            <td>{{subjects_list[i['subjects']-1]['value']}}</td>
-          </tr>
-
-          <tr>
             <th style="width:10rem;">学年</th>
             <!--テーブルgrade_listの中から読み取る、配列の順番は最初が[0]だからi['grade']から１引かないと-->
             <td>{{grade_list[i['grade']-1]['value']}}</td>
+          </tr>
+
+          <tr>
+            <th style="width:10rem;">教科領域等</th>
+            <!--テーブルsubjectsの中から読み取る、配列の順番は最初が[0]だからi['subjects']から１引かないと-->
+            <td>{{subjects_list[i['subjects']-1]['value']}}</td>
           </tr>
 
           <tr>
@@ -109,6 +96,13 @@
         </tbody>
       </table>
       {% endfor %}
+      <!--ページネーション-->
+      <div class="nav-links">
+        <p>{{page_num}}</p>
+        {% for i in page_num %}
+        <a href="/{{i}}">{{page_num[i]}}</a>
+        {% endfor %}
+      </div>
     </div>
   </div>
 </div>

@@ -205,7 +205,8 @@ li{
     border: 1px solid gray;/*外枠の線の設定*/
     border-collapse: separate;/*隣接するセルのボーダーを重ねるか、間隔をあけるか*/
     border-radius: 5px;/*外枠の角丸半径*/
-    border-spacing: 0;
+    border-spacing: 0;/*隣接するセルのボーダーとボーダーの間隔*/
+    margin: 20px;
 }
 .zebra th, td{
     border-bottom: 1px solid gray;
@@ -218,31 +219,34 @@ li{
 .zebra td{
     border-right: 1px solid gray;
 }
-.zebra th:first-child{
+.zebra th:first-child{/*一番最初のth要素なので、左上*/
     /*左上の角丸*/
     border-radius: 4px 0 0 0;
 }
-.zebra th:last-child{
+.zebra th:last-child{/*一番最後のth要素なので、右上*/
+    /*thセルの右のボーダーとtable全体のボーダーが被るので、ここだけ消す*/
     border-right: none;
     border-radius: 0 4px 0 0;
 }
-.zebra tr:last-child td:last-child{
+.zebra tr:last-child td:last-child{/*一番最後のtr要素の中の一番最後のtd要素なので、右下*/
     border-radius: 0 0 4px 0;
 }
-.zebra tr:last-child td:first-child{
+.zebra tr:last-child td:first-child{/*一番最後のtr要素の中の一番最初のtd要素なので、左下*/
     border-radius: 0 0 0 4px;
 }
-.zebra tr:last-child td{
+.zebra tr:last-child td{/*一番最後のtr要素の中のtd要素全部なので、最下部の行全体*/
+    /*tr要素、つまり行の下に設定したボーダーと、table全体のボーダーが被るので、ここだけ消す*/
     border-bottom: none;
 }
-.zebra td:last-child{
+.zebra td:last-child{/*一番最後のtd要素なので、tr要素の中の最後のtd要素になるので、th以外の右側のセル*/
+    /*tdセルの右のボーダーとtable全体のボーダーが被るので、ここだけ消す*/
     border-right: none;
 }
 .zebra tr:nth-child(odd){
-    background-color: lightblue;
+    background-color: #ececec;
 }
 .zebra tr:nth-child(even){
-    background-color: white;
+    background-color: #e4e2e2;
 }
 /*↑データベース検索のtableデザイン↑*/
 
@@ -358,3 +362,46 @@ li{
 .form_001 input[type = "submit"]:active{
     box-shadow: inset 5px 5px 10px #4b5566;
 }
+
+.caret{
+    display: inline-block;
+    width: 0;
+    height: 0;
+    vertical-align: middle;
+    border-top: 4px dashed;
+    border-right: 4px solid transparent;
+    border-left: 4px solid transparent;
+}
+
+.search_engine{
+    margin: 10px auto 10px auto;
+    padding: 20px;
+    border: solid 1px gray;
+    border-radius: 5px;
+    width: 1000px;
+}
+
+.select_button{
+    background-color: #eee;
+    outline: none;
+    color: black;
+    margin: 10px;
+    padding: 5px 15px;
+    height: 40px;
+    border-radius: 20px;
+    border: none;
+    box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #fff;
+}
+
+.select_text{
+    background-color: #eee;
+    outline: none;
+    color: black;
+    margin: 10px;
+    padding: 0px 15px;
+    height: 40px;
+    border-radius: 25px;
+    border: none;
+    box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #fff;
+}
+
