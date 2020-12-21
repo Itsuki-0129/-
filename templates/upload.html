@@ -11,54 +11,21 @@
         <form class="form_001" method="POST" id="form_001" enctype="multipart/form-data">
             <select name="select_school_type">
                 <option value=""hidden>校種を選択</option>
-                <option value="1">小学校</option>
-                <option value="2">中学校</option>
-                <option value="3">高等学校</option>
-                <option value="4">特別支援</option>
+                {% for i in school_type_list %}
+                    <option value="{{i['id']}}">{{i['value']}}</option>
+                {% endfor %}
             </select>
             <select name="select_subjects">
                 <option value=""hidden>教科領域等を選択</option>
-                <option value="1">国語科</option>
-                <option value="2">算数科</option>
-                <option value="3">理科</option>
-                <option value="4">社会科</option>
-                <option value="5">音楽科</option>
-                <option value="6">体育科</option>
-                <option value="7">保健体育科</option>
-                <option value="8">道徳の時間</option>
-                <option value="9">道徳教育</option>
-                <option value="10">特別活動</option>
-                <option value="11">総合的な学習の時間</option>
-                <option value="12">生活科</option>
-                <option value="13">美術科</option>
-                <option value="14">数学科</option>
-                <option value="15">英語科</option>
-                <option value="16">外国語活動</option>
-                <option value="17">技術分野</option>
-                <option value="18">家庭分野</option>
-                <option value="19">図画工作科</option>
-                <option value="20">地理歴史科</option>
-                <option value="21">公民科</option>
-                <option value="22">農業科</option>
-                <option value="23">商業科</option>
-                <option value="24">工業科</option>
-                <option value="25">家庭科</option>
-                <option value="26">自立活動</option>
-                <option value="27">芸術科</option>
-                <option value="28">外国語科</option>
-                <option value="29">スポーツ総合科</option>
+                {% for i in subjects_list %}
+                    <option value="{{i['id']}}">{{i['value']}}</option>
+                {% endfor %}
             </select>
             <select name="select_grade">
                 <option value=""hidden>学年を選択</option>
-                <option value="1">1学年</option>
-                <option value="2">2学年</option>
-                <option value="3">3学年</option>
-                <option value="4">4学年</option>
-                <option value="5">5学年</option>
-                <option value="6">6学年</option>
-                <option value="7">小学部</option>
-                <option value="8">中学部</option>
-                <option value="9">高等部</option>
+                {% for i in grade_list %}
+                    <option value="{{i['id']}}">{{i['value']}}</option>
+                {% endfor %}
             </select>
 
             <input type="text" name="subject_title" placeholder="単元題材名" autocomplete="off">

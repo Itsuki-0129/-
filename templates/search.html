@@ -3,10 +3,21 @@
 <div class="main">
   <div class="search_engine">
     <form action="/search" method="POST">
+      <select name="page_limit" id="page_limit" class="select_button">
+        <option value=""hidden>表示件数</option>
+        {% for i in range(1, 51) %}
+          {% if i|string == select_json['page_limit'] %}
+            <option value="{{i}}" selected>{{i}}</option>
+          {% else %}
+            <option value="{{i}}">{{i}}</option>
+          {% endif %}
+        {% endfor %}
+      </select>
 
       <label for="select_school_type" class="select_label">
         <select name="select_school_type"  id="select_school_type" class="select_button">
           <option value=""hidden>校種を選択</option>
+          <option value="">指定なし</option>
           {% for i in  school_type_list %}
             {% if i['id']|string == select_json['select_school_type'] %}
               <option value="{{i['id']}}" selected>{{i['value']}}</option>
@@ -20,6 +31,7 @@
       
       <select name="select_subjects" class="select_button">
         <option value=""hidden>教科領域等を選択</option>
+        <option value="">指定なし</option>
         {% for i in subjects_list %}
           {% if i['id']|string == select_json['select_subjects'] %}
             <option value="{{i['id']}}" selected>{{i['value']}}</option>
@@ -30,7 +42,8 @@
       </select>
 
       <select name="select_grade" class="select_button">
-        <option value=""hiddenn>学年を選択</option>
+        <option value=""hidden>学年を選択</option>
+        <option value="">指定なし</option>
         {% for i in grade_list %}
           {% if i['id']|string == select_json['select_grade'] %}
             <option value="{{i['id']}}" selected>{{i['value']}}</option>
@@ -43,10 +56,26 @@
       <input type="text" name="subject_title" class="select_text" value="{{select_json['subject_title']}}" placeholder="単元題材名" autocomplete="off">
       <input type="text" name="done_year" class="select_text" value="{{select_json['done_year']}}" placeholder="実施年度" autocomplete="off">
       <input type="submit" class="submit_button" name="search_engin_submit" value="検索">
+      <input type="hidden" name="select_link" value="1">
     </form>
+    <!--ページネーション-->
+    <div class="nav-links">
+      <form action="/search" method="POST" name="select_link_form" id="form_007">
+        <input type="hidden" name="page_limit" value="{{select_json['page_limit']}}">
+        <input type="hidden" name="select_school_type" value="{{select_json['select_school_type']}}">
+        <input type="hidden" name="select_subjects" value="{{select_json['select_subjects']}}">
+        <input type="hidden" name="select_grade" value="{{select_json['select_grade']}}">
+        <input type="hidden" name="subject_title"value="">
+        <input type="hidden" name="done_year" value="">
+        <input type="hidden" name="select_link" id="select_link">
+        {% for i in page_num %}
+        <button type="button" onclick="link_num({{page_num[i]+1}});">{{page_num[i]+1}}</a>
+        {% endfor %}
+      </form>
+    </div>
     <div class="kumamoto">
       <h4>最大ページ数は{{page_max}}</h4>
-      {% for i in result_uploads_list[page_start:page_start+page_limit] %}
+      {% for i in result_uploads_list[page_start:page_start+page_limit|int] %}
       {{loop.index}}
       <table class="file_info">
         <tbody>
@@ -99,9 +128,18 @@
       <!--ページネーション-->
       <div class="nav-links">
         <p>{{page_num}}</p>
-        {% for i in page_num %}
-        <a href="/{{i}}">{{page_num[i]}}</a>
-        {% endfor %}
+        <form action="/search" method="POST" name="select_link_form" id="form_007">
+          <input type="hidden" name="page_limit" value="{{select_json['page_limit']}}">
+          <input type="hidden" name="select_school_type" value="{{select_json['select_school_type']}}">
+          <input type="hidden" name="select_subjects" value="{{select_json['select_subjects']}}">
+          <input type="hidden" name="select_grade" value="{{select_json['select_grade']}}">
+          <input type="hidden" name="subject_title"value="">
+          <input type="hidden" name="done_year" value="">
+          <input type="hidden" name="select_link" id="select_link">
+          {% for i in page_num %}
+          <button type="button" onclick="link_num({{page_num[i]+1}});">{{page_num[i]+1}}</a>
+          {% endfor %}
+        </form>
       </div>
     </div>
   </div>

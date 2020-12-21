@@ -205,3 +205,9 @@ function submit_register(){
   upload_form.action = "/register_check";
   upload_form.submit();
 }
+
+function link_num(submit_pattern){
+  $("#select_link").val(submit_pattern);
+  //フォームの送信
+  $("#form_007").submit();
+}

@@ -202,16 +202,21 @@ def search_form():
     select_grade = ""
     subject_title = ""
     done_year = ""
-    select_json = {}
+    now_page = 1
+    page_limit = 5
+    select_json = {'page_limit':page_limit}
     if request.method == "POST":
-        select_school_type = request.form['select_school_type']
-        select_subjects = request.form['select_subjects']
-        select_grade = request.form['select_grade']
-        subject_title = request.form['subject_title']
-        done_year = request.form['done_year']
-        select_json = {'select_school_type':select_school_type, 'select_subjects':select_subjects, \
+        select_school_type = request.form['select_school_type']#校種
+        select_subjects = request.form['select_subjects']#強化領域等
+        select_grade = request.form['select_grade']#学年
+        subject_title = request.form['subject_title']#単元題材名
+        done_year = request.form['done_year']#実施年度
+        now_page = request.form['select_link']#ページネーションの現在のページ番号
+        page_limit = request.form['page_limit']#ページネーションの表示件数
+        select_json = {'page_limit':page_limit,'select_school_type':select_school_type, 'select_subjects':select_subjects, \
             'select_grade':select_grade, 'subject_title':subject_title, 'done_year':done_year}
         print('select_json==>'+str(select_json))
+        print('ページ番号は==>'+str(now_page))
     print("これが検索条件"+select_school_type+", "+select_subjects+", "+select_grade+", "+subject_title+", "+done_year)
 #-----------------------uploads_listの教材情報を表示するための準備-----------------------
     empty_box = select_school_type+select_subjects+select_grade+subject_title+done_year
@@ -246,25 +251,24 @@ def search_form():
 #--------------------------------------ここまで---------------------------------------
 #-----------------------------------ページネーション-----------------------------------
     #page_numの中身はjsonで{ページ番号:リンク}でおk？
-    page_limit = len(result_uploads_list)
-    now_page = 1#リンクからの値で変更できるように GET
+
     #ページの最初は、=(now_page-1)*page_limit=(現在のページ-1)*表示件数
-    page_start = (now_page-1)*2
+    page_start = (int(now_page)-1)*int(page_limit)
 
     #件数が0だと0/0でエラーが起こるので例外追加(2020-12-21)
     try:
-        if len(result_uploads_list)%page_limit != 0:
-            page_max = len(result_uploads_list)//page_limit+1
+        if len(result_uploads_list)%int(page_limit) != 0:
+            page_max = len(result_uploads_list)//int(page_limit)+1
         else:
-            page_max = len(result_uploads_list)//page_limit
+            page_max = len(result_uploads_list)//int(page_limit)
     except:
         page_max = 0
         
 
     #ここからはページリンク生成のテスト
     page_num = {}
-    for num, i in enumerate(result_uploads_list):
-        page_num[num]=i['title']
+    for num in range(page_max):
+        page_num[num]=num
 
     return render_template("search.html"\
         , login_info=login_info, result_uploads_list=result_uploads_list, select_json=select_json\
@@ -336,7 +340,15 @@ def pptx_upload():
                 #アップロード後のページに転送
                 return redirect(url_for('uploaded_file', filename=filename))
             #アップロード画面のリターン？
-            return render_template("upload.html", login_info=login_info, upload_status="ファイルを選択してください")
+
+            #校種リストを準備
+            school_type_list = db_access("final_research", "select * from school_type;")
+            #強化領域等リストを準備
+            subjects_list = db_access("final_research", "select * from subjects;")
+            #学年リストを準備
+            grade_list = db_access("final_research", "select * from grade;")
+            return render_template("upload.html", login_info=login_info, upload_status="ファイルを選択してください"\
+                , school_type_list=school_type_list, subjects_list=subjects_list, grade_list=grade_list)
         else:
             #ログインしてない場合はまずログインさせる
             return render_template("login.html", Already="共有するにはログインしてください", login_info=login_info)
