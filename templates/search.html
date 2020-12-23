@@ -68,8 +68,16 @@
         <input type="hidden" name="subject_title"value="">
         <input type="hidden" name="done_year" value="">
         <input type="hidden" name="select_link" id="select_link">
-        {% for i in page_num %}
-        <button type="button" onclick="link_num({{page_num[i]+1}});">{{page_num[i]+1}}</a>
+        {% for i in page_num %}<!--page_numはキーと値が数字のjson-->
+          {% if now_page|int == page_num[i]+1 %}
+            <!--<span class="current">{{page_num[i]+1}}</span>-->
+            <button type="button" class="current">{{page_num[i]+1}}</button>
+            <!---->
+          {% else %}
+            <!--<a href="javascript:void(9)" onclick="link_num({{page_num[i]+1}});">{{page_num[i]+1}}</a>-->
+            <button type="button" class="link_button" onclick="link_num({{page_num[i]+1}});">{{page_num[i]+1}}</button>
+            <!---->
+          {% endif %}
         {% endfor %}
       </form>
     </div>
@@ -105,7 +113,7 @@
           <tr>
             <th style="width:10rem;">ファイル名</th>
             <td>
-              <span class="file_link"></span>&nbsp;<a href="/" target="_blank">{{i['file_name']}}</a>
+              <span class="file_link"></span>&nbsp;<a href="/uploads/用いた技術（グレイトーン）_a.pdf" target="_blank">{{i['file_name']}}</a>
             </td>
           </tr>
 
@@ -127,7 +135,6 @@
       {% endfor %}
       <!--ページネーション-->
       <div class="nav-links">
-        <p>{{page_num}}</p>
         <form action="/search" method="POST" name="select_link_form" id="form_007">
           <input type="hidden" name="page_limit" value="{{select_json['page_limit']}}">
           <input type="hidden" name="select_school_type" value="{{select_json['select_school_type']}}">
@@ -136,8 +143,16 @@
           <input type="hidden" name="subject_title"value="">
           <input type="hidden" name="done_year" value="">
           <input type="hidden" name="select_link" id="select_link">
-          {% for i in page_num %}
-          <button type="button" onclick="link_num({{page_num[i]+1}});">{{page_num[i]+1}}</a>
+          {% for i in page_num %}<!--page_numはキーと値が数字のjson-->
+            {% if now_page|int == page_num[i]+1 %}
+              <!--<span class="current">{{page_num[i]+1}}</span>-->
+              <button type="button" class="current">{{page_num[i]+1}}</button>
+              <!---->
+            {% else %}
+              <!--<a href="javascript:void(9)" onclick="link_num({{page_num[i]+1}});">{{page_num[i]+1}}</a>-->
+              <button type="button" class="link_button" onclick="link_num({{page_num[i]+1}});">{{page_num[i]+1}}</button>
+              <!---->
+            {% endif %}
           {% endfor %}
         </form>
       </div>

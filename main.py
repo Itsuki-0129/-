@@ -273,7 +273,7 @@ def search_form():
     return render_template("search.html"\
         , login_info=login_info, result_uploads_list=result_uploads_list, select_json=select_json\
             , school_type_list=school_type_list, subjects_list=subjects_list, grade_list=grade_list, id_name_json=id_name_json\
-                , page_num=page_num, page_start=page_start, page_limit=page_limit, page_max=page_max)
+                , page_num=page_num, page_start=page_start, page_limit=page_limit, page_max=page_max, now_page=now_page)
 
 #ファイルのアップロード先のディレクトリ
 UPLOAD_FOLDER = './static/uploads'
@@ -303,6 +303,20 @@ def pptx_upload():
                     return redirect(request.url)
                 #ファイルのチェック
                 if file and allwed_file(file.filename):
+                    #危険な文字を削除(サニタイズ処理？)→ここで絶対パスとか消してるの？？？どうなの？？？
+                    #filename = secure_filename(file.filename)
+                    if os.path.isfile('./static/uploads/'+session['user_name']+'/'+file.filename) == True:
+                        ex = os.path.splitext(file.filename)
+                        filename = ex[0]+'_a'+ex[1]
+                    else:
+                        filename = file.filename
+                    #ファイル名の付け方で困ってます！！！！！！2020-12-18
+                    #フォルダが存在してなければフォルダを作るif文
+                    if os.path.exists('./static/uploads/'+session['user_name'])==True:
+                        print('パスが存在!')
+                    else:
+                        #uploadsフォルダの中にユーザー名フォルダを作成
+                        os.mkdir('./static/uploads/'+session['user_name'])
                     #-------------------------↓データベースのuploads_listに登録する-------------------------
                     select_school_type = request.form['select_school_type']
                     select_subjects = request.form['select_subjects']
@@ -328,15 +342,8 @@ def pptx_upload():
                     #↓先に用意したクエリをもとにinsert
                     db_insert("final_research", sql_query)
                     #--------------------------------------↑ここまで--------------------------------------
-                    #危険な文字を削除(サニタイズ処理？)→ここで絶対パスとか消してるの？？？どうなの？？？
-                    #filename = secure_filename(file.filename)
-                    filename = file.filename
-                    #ファイル名の付け方で困ってます！！！！！！2020-12-18
-                    mkdir_sql = "select id from uploads_list where " 
-                    db_access("final_research", mkdir_sql)
-                    os.mkdir('./static/uploads/test')
                     #ファイルの保存
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/test", filename))
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/"+session['user_name'], filename))
                 #アップロード後のページに転送
                 return redirect(url_for('uploaded_file', filename=filename))
             #アップロード画面のリターン？
@@ -361,7 +368,7 @@ def pptx_upload():
 #アップロード後に転送されるページ
 def uploaded_file(filename):
     login_info = login_check()
-    #return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+    #return send_from_directory(app.config['UPLOAD_FOLDER']+session['user_name'], filename)
     return render_template("upload.html", login_info=login_info, upload_status="アップロードしました！")
 
 def allwed_file(filename):
@@ -372,3 +379,4 @@ def allwed_file(filename):
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)
     app.run(host='0.0.0.0', port=5500, debug=True)
+

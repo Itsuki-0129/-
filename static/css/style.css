@@ -7,6 +7,35 @@ body{
     background-color: #eeeeee;
 }
 
+.copy-container h1 span{
+    color: #d8004f;
+}
+
+.index_box_ul{
+    width: fit-content;
+    overflow: hidden;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.index_box{
+    text-decoration: none;
+    color: black;
+    float: left;
+    border: none;
+    border-radius: 25px;
+    background-color: #eee;
+    /*background-color: #860031;*/
+    box-shadow: 7px 7px 10px #8b8b8b, -7px -7px 10px #fff;
+    width: 200px;
+    height: 300px;
+    padding: 10px;
+    margin: 15px 100px;
+    text-align: center;
+    font-size: 30px;
+    vertical-align: middle;
+}
+
 .soft_ui{
     background-color: #eee;
     outline: none;
@@ -354,6 +383,34 @@ li{
     box-shadow: 5px 5px 10px #252a33, -5px -5px 10px #93a5c7;
 }
 
+.upload_select{
+    background-color: #596479;
+    outline: none;
+    color: white;
+    margin: 5px;
+    padding: 5px 15px;
+    height: 50px;
+    border-radius: 25px;
+    border: none;
+    box-shadow: 5px 5px 10px #252a33, -5px -5px 10px #93a5c7;
+}
+
+.upload_text{
+    background-color: #596479;
+    outline: none;
+    color: white;
+    margin: 5px;
+    padding: 0px 15px;
+    height: 50px;
+    border-radius: 25px;
+    border: none;
+    box-shadow: 5px 5px 10px #252a33, -5px -5px 10px #93a5c7;
+}
+
+.upload_text::placeholder{
+    color: #bebebe;
+}
+
 .form_001 input[type = "submit"]:hover{
     background-color: #67748b;
     transition: all 0.3s ease;
@@ -361,6 +418,13 @@ li{
 
 .form_001 input[type = "submit"]:active{
     box-shadow: inset 5px 5px 10px #4b5566;
+}
+
+.div_center{
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
 }
 
 .caret{
@@ -405,3 +469,46 @@ li{
     box-shadow: 5px 5px 10px #bebebe, -5px -5px 10px #fff;
 }
 
+.nav-links{
+    padding: 2em;
+    display: flex;
+    justify-content: center;
+    background: none;
+}
+
+.nav-links .link_button{
+    outline: none;
+    width: 50px;
+    height: 50px;
+    margin: 2px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    background: #fff;
+    color: #222;
+    transition: .3s;
+}
+
+.current{
+    outline: none;
+    width: 50px;
+    height: 50px;
+    margin: 2px;
+    line-height: 50px;
+    text-align: center;
+    font-size:14px;
+    font-weight:bold;
+    text-decoration:none;
+    color:#222;
+    transition:.3s;
+    background-color: gold;
+    border-radius: 100%;
+}
+
+.nav-links .link_button:hover{
+    background: gold;
+    border-radius: 100%;
+    transform: rotate(360deg);
+}

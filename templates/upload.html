@@ -9,27 +9,29 @@
         </p>
         <!--enctype="multipart/form-data"てなに？？？-->
         <form class="form_001" method="POST" id="form_001" enctype="multipart/form-data">
-            <select name="select_school_type">
-                <option value=""hidden>校種を選択</option>
-                {% for i in school_type_list %}
-                    <option value="{{i['id']}}">{{i['value']}}</option>
-                {% endfor %}
-            </select>
-            <select name="select_subjects">
-                <option value=""hidden>教科領域等を選択</option>
-                {% for i in subjects_list %}
-                    <option value="{{i['id']}}">{{i['value']}}</option>
-                {% endfor %}
-            </select>
-            <select name="select_grade">
-                <option value=""hidden>学年を選択</option>
-                {% for i in grade_list %}
-                    <option value="{{i['id']}}">{{i['value']}}</option>
-                {% endfor %}
-            </select>
-
-            <input type="text" name="subject_title" placeholder="単元題材名" autocomplete="off">
-            <input type="text" name="done_year" placeholder="実施年度" autocomplete="off">
+            <div class="div_center">
+                <select name="select_school_type" class="upload_select">
+                    <option value=""hidden>校種を選択</option>
+                    {% for i in school_type_list %}
+                        <option value="{{i['id']}}">{{i['value']}}</option>
+                    {% endfor %}
+                </select>
+                <select name="select_subjects" class="upload_select">
+                    <option value=""hidden>教科領域等を選択</option>
+                    {% for i in subjects_list %}
+                        <option value="{{i['id']}}">{{i['value']}}</option>
+                    {% endfor %}
+                </select>
+                <select name="select_grade" class="upload_select">
+                    <option value=""hidden>学年を選択</option>
+                    {% for i in grade_list %}
+                        <option value="{{i['id']}}">{{i['value']}}</option>
+                    {% endfor %}
+                </select>
+    
+                <input type="text" name="subject_title" class="upload_text" placeholder="単元題材名" autocomplete="off">
+                <input type="text" name="done_year" class="upload_text" placeholder="実施年度" autocomplete="off">
+            </div>
             <div class="add_square_dashed">
                 <label for="upload_button">
                     <div class="add_square">
