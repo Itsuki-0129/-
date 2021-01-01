@@ -186,6 +186,11 @@ def home():
     if db_result[0]["count(*)"] == 1:
         session['logged_in'] = True
         session['user_name'] = user_str
+        id_query = "select id from member where user = '%s' and password = '%s';"%(user_str, passwd_str)
+        id_db_result = db_access("final_research", id_query)
+        print("idだけテスト→"+str(id_db_result[0]['id']))
+        session['user_id'] = id_db_result[0]['id']
+        
     else:
         session['logged_in'] = False
     return login_form()
@@ -287,10 +292,13 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def pptx_upload():
     login_info = login_check()
     try:
+        print('共有ページでtry:は通過')
         #もしログインしてるなら、共有作業
         if session['logged_in'] == True:
+            print("共有ページでsession['logged_in'] == Trueです")
             #↓リクエストがポスト可動科の判別
             if request.method == 'POST':
+                print("共有ページでrequest.method == 'POST'です")
                 #ファイルがなかった場合の処理
                 if 'file' not in request.files:
                     print('ファイルがありません')
@@ -299,51 +307,56 @@ def pptx_upload():
                 file = request.files['file']
                 #ファイル名が無かった時の処理
                 if file.filename == '':
-                    print('ファイルがありません')
+                    print('ファイル名がありません')
                     return redirect(request.url)
                 #ファイルのチェック
                 if file and allwed_file(file.filename):
+                    print("共有ページでfile and allwed_file(file.filename)は通過")
                     #危険な文字を削除(サニタイズ処理？)→ここで絶対パスとか消してるの？？？どうなの？？？
                     #filename = secure_filename(file.filename)
-                    if os.path.isfile('./static/uploads/'+session['user_name']+'/'+file.filename) == True:
+                    filename = {}
+                    #
+                    if os.path.isfile('./static/uploads/'+str(session['user_id'])+'/'+file.filename) == True:
+                        print("共有ページでユーザーidフォルダの中にファイルがあった")
                         ex = os.path.splitext(file.filename)
-                        filename = ex[0]+'_a'+ex[1]
+                        filename['filename'] = ex[0]+'_a'+ex[1]
+                        filename['url'] = 'tetete'
                     else:
-                        filename = file.filename
-                    #ファイル名の付け方で困ってます！！！！！！2020-12-18
+                        print("共有ページでユーザーidフォルダの中にファイルがなかった")
+                        filename['filename'] = str(file.filename)
+                        filename['url'] = "tetete"
+                    print("共有ページでfilenameのjson : "+str(filename))
                     #フォルダが存在してなければフォルダを作るif文
-                    if os.path.exists('./static/uploads/'+session['user_name'])==True:
-                        print('パスが存在!')
+                    if os.path.exists('./static/uploads/'+str(session['user_id']))==True:
+                        print('共有ページでパスが存在!')
                     else:
+                        print("共有ページでパスが存在しないからフォルダ作成")
                         #uploadsフォルダの中にユーザー名フォルダを作成
-                        os.mkdir('./static/uploads/'+session['user_name'])
+                        os.mkdir('./static/uploads/'+str(session['user_id']))
                     #-------------------------↓データベースのuploads_listに登録する-------------------------
                     select_school_type = request.form['select_school_type']
                     select_subjects = request.form['select_subjects']
                     select_grade = request.form['select_grade']
                     subject_title = request.form['subject_title']
                     done_year = request.form['done_year']
-                    #↓session['user_name']の中のユーザーネームでidを問い合わせる
-                    user_id_query = "select id from member where user='%s';"%(session['user_name'])
-                    print(user_id_query)
                     #↓データ名がidしかない表から値を取り出す
-                    user_id = db_access("final_research", user_id_query)[0]['id']
-                    print(user_id)
+                    print("共有ページでユーザーid: "+str(session['user_id']))
                     #↓insertのためのカラム
                     insert_column = "file_name, user_id, school_type, subjects, grade, title, year"
                     #↓まずはただのinsertのvaluesのリスト
-                    value_list = [filename, int(user_id), int(select_school_type), int(select_subjects), int(select_grade), subject_title, done_year]
+                    value_list = [json.dumps(filename), int(session['user_id']), int(select_school_type), int(select_subjects), int(select_grade), subject_title, done_year]
                     #↓上のvalue_listの[]がうざいので除去
                     insert_value = ", ".join(repr(e) for e in value_list)
-                    print(", ".join(repr(e) for e in value_list))
+                    print("共有ページでinsertするvaluesの中身"+", ".join(repr(e) for e in value_list))
                     #↓uploads_listテーブルにデータを登録するクエリ
                     sql_query = "insert into uploads_list (%s) values(%s)"%(insert_column, insert_value)
-                    print(sql_query)
+                    print("共有ページでinsertするsql文:"+sql_query)
                     #↓先に用意したクエリをもとにinsert
                     db_insert("final_research", sql_query)
                     #--------------------------------------↑ここまで--------------------------------------
                     #ファイルの保存
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/"+session['user_name'], filename))
+                    print("共有ページでfile.saveのパスは: "+str(app.config['UPLOAD_FOLDER'])+"/"+str(session['user_id'])+str(filename['filename']))
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/"+str(session['user_id']), filename['filename']))
                 #アップロード後のページに転送
                 return redirect(url_for('uploaded_file', filename=filename))
             #アップロード画面のリターン？
@@ -358,9 +371,11 @@ def pptx_upload():
                 , school_type_list=school_type_list, subjects_list=subjects_list, grade_list=grade_list)
         else:
             #ログインしてない場合はまずログインさせる
+            print("共有ページでログインしてないよ")
             return render_template("login.html", Already="共有するにはログインしてください", login_info=login_info)
     except:
         #一度もログイン作業を行なっていないとエラーになるからそのときもログインを促す
+        print("共有ページでexcept:だよ")
         return render_template("login.html", Already="共有するにはログインしてください", login_info=login_info)
     #return render_template("upload.html", login_info=login_info)
 
@@ -375,6 +390,12 @@ def allwed_file(filename):
     #.があるかどうかのチェックと、拡張子の確認
     #okなら1, だめなら0
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+#jinja2用のフィルター定義
+@app.template_filter('to_json')#''で囲まれたstr扱いのjsonをjson.loadsでjsonに、つまり''をはずす。
+def to_json(value):
+    print(value)
+    return json.loads(value)
 
 if __name__ == '__main__':
     app.secret_key = os.urandom(12)

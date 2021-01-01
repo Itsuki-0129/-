@@ -115,7 +115,7 @@
           <tr>
             <th style="width:10rem;">ファイル名</th>
             <td>
-              <span class="file_link"></span>&nbsp;<a href="/uploads/用いた技術（グレイトーン）_a.pdf" target="_blank">{{i['file_name']}}</a>
+              <span class="file_link"></span>&nbsp;<a href="{{(i['file_name']|to_json)['url']}}" target="_blank">{{((i['file_name']|to_json)['filename'])}}</a>
             </td>
           </tr>
 
@@ -134,6 +134,7 @@
 
         </tbody>
       </table>
+      <h1>{{i}}</h1>
       {% endfor %}
       <!--ページネーション-->
       <div class="nav-links">
