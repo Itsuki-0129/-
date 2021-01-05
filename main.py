@@ -1,7 +1,7 @@
 from flask import Flask, session, abort, json, jsonify, send_from_directory
 from flask import Flask, flash, redirect, render_template, request, url_for
 from werkzeug.utils import secure_filename
-import pymysql, requests, os, sys, re
+import pymysql, requests, os, sys, re, datetime
 
 app = Flask(__name__)
 app.secret_key = "hogehoge"
@@ -315,16 +315,15 @@ def pptx_upload():
                     #危険な文字を削除(サニタイズ処理？)→ここで絶対パスとか消してるの？？？どうなの？？？
                     #filename = secure_filename(file.filename)
                     filename = {}
-                    #
                     if os.path.isfile('./static/uploads/'+str(session['user_id'])+'/'+file.filename) == True:
                         print("共有ページでユーザーidフォルダの中にファイルがあった")
                         ex = os.path.splitext(file.filename)
                         filename['filename'] = ex[0]+'_a'+ex[1]
-                        filename['url'] = 'tetete'
+                        filename['url'] = '/export/%s/%s/%s'%(str(session['user_id']), str(ex[0]+'_a'+ex[1]), str(datetime.datetime.now().strftime('%H:%M:%S')))
                     else:
                         print("共有ページでユーザーidフォルダの中にファイルがなかった")
                         filename['filename'] = str(file.filename)
-                        filename['url'] = "tetete"
+                        filename['url'] = '/export/%s/%s/%s'%(str(session['user_id']), str(file.filename), str(datetime.datetime.now().strftime('%H:%M:%S')))
                     print("共有ページでfilenameのjson : "+str(filename))
                     #フォルダが存在してなければフォルダを作るif文
                     if os.path.exists('./static/uploads/'+str(session['user_id']))==True:
@@ -355,10 +354,10 @@ def pptx_upload():
                     db_insert("final_research", sql_query)
                     #--------------------------------------↑ここまで--------------------------------------
                     #ファイルの保存
-                    print("共有ページでfile.saveのパスは: "+str(app.config['UPLOAD_FOLDER'])+"/"+str(session['user_id'])+str(filename['filename']))
+                    print("共有ページでfile.saveのパスは: "+str(app.config['UPLOAD_FOLDER'])+"/"+str(session['user_id'])+"/"+str(filename['filename']))
                     file.save(os.path.join(app.config['UPLOAD_FOLDER']+"/"+str(session['user_id']), filename['filename']))
                 #アップロード後のページに転送
-                return redirect(url_for('uploaded_file', filename=filename))
+                return redirect(url_for('uploaded_file'))
             #アップロード画面のリターン？
 
             #校種リストを準備
@@ -379,9 +378,9 @@ def pptx_upload():
         return render_template("login.html", Already="共有するにはログインしてください", login_info=login_info)
     #return render_template("upload.html", login_info=login_info)
 
-@app.route('/uploads/<filename>')
+@app.route('/uploads/success')
 #アップロード後に転送されるページ
-def uploaded_file(filename):
+def uploaded_file():
     login_info = login_check()
     #return send_from_directory(app.config['UPLOAD_FOLDER']+session['user_name'], filename)
     return render_template("upload.html", login_info=login_info, upload_status="アップロードしました！")
@@ -390,6 +389,16 @@ def allwed_file(filename):
     #.があるかどうかのチェックと、拡張子の確認
     #okなら1, だめなら0
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+#ファイルのエクスポート
+@app.route('/export/<user_id>/<file_name>/<urandom_num>')
+def export_action(file_name=None, urandom_num=None, user_id=None):
+    print(urandom_num)
+    return send_from_directory(
+        directory = './static/uploads/'+user_id,
+        filename = file_name,
+        as_attachment = True,
+    )
 
 #jinja2用のフィルター定義
 @app.template_filter('to_json')#''で囲まれたstr扱いのjsonをjson.loadsでjsonに、つまり''をはずす。
