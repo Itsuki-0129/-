@@ -4,7 +4,7 @@
   <div class="search_engine">
     <form action="/search" method="POST">
       <select name="page_limit" id="page_limit" class="select_button">
-        <option value=""hidden>表示件数</option>
+        <option value="5"hidden>表示件数</option>
         {% for i in range(0, 51, 5) %}
           {% if i != 0 %}
             {% if i|string == select_json['page_limit'] %}
